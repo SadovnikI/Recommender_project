@@ -1,0 +1,75 @@
+version: "3"
+
+services:
+
+  ncf_model:
+    container_name: NCF_model
+    build:
+      context: ./recomendation_workers/NCF
+    command: uvicorn api:app --host 0.0.0.0 --port 8008 --reload
+    volumes:
+      - ./recomendation_workers/NCF:C:\code_NCF
+    ports:
+      - 8008:8008
+
+  bivae_model:
+    container_name: BiVAE_model
+    build:
+      context: ./recomendation_workers/BiVAE
+    command: uvicorn api:app --host 0.0.0.0 --port 8009 --reload
+    volumes:
+      - ./recomendation_workers/BiVAE:C:\code_BiVAE
+    ports:
+      - 8009:8009
+
+  wnd_model:
+    container_name: WandD_model
+    build:
+      context: ./recomendation_workers/W&D
+    command: uvicorn api:app --host 0.0.0.0 --port 8007 --reload
+    volumes:
+      - ./recomendation_workers/W&D:C:\code_WandD
+    ports:
+      - 8007:8007
+
+  db:
+    image: mysql
+    container_name: db_mysql
+    ports:
+      - '3306:3333'
+    environment:
+      MYSQL_DATABASE: 'db_django'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+      MYSQL_HOST: ''
+    volumes:
+      - ./db_django:/var/lib/mysql
+
+
+
+  backend:
+    build:
+      context: ./backend
+    container_name: backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:C:\backend
+    command: python manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - db
+
+#  frontend:
+#    container_name: frontend
+#    ports:
+#      - "5173:5173"
+#    command: ['npm','run', 'dev']
+#    build:
+#      context: ./frontend/movie-frontend
+#    depends_on:
+#      - backend
+
+
+volumes:
+  db:
+    driver: local

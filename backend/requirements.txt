@@ -1,0 +1,8 @@
+Django>=3.1.14
+psycopg2>=2.7,<3.0
+django-crispy-forms==1.7.2
+djangorestframework==3.8.2
+djangorestframework-jwt==1.11.0
+Pillow==5.2.0
+mysqlclient==2.0.1
+django-mysql==3.8.1
